@@ -19,7 +19,7 @@ fileName = cellInfoAllCells.fileName;
 graphTypeTag = cellInfoAllCells.graphTypeTag;
 
 %% print global metrics
-writePath = strcat(outputPath, filesep, fileName, '-GlobalMetrics-', graphTypeTag, '.csv');
+writePath = fullfile(outputPath, strcat(fileName, '-GlobalMetrics-', graphTypeTag, '.csv'))
 fid = fopen(writePath, 'w');
 
 for i = 1:nGlobalMetrics
@@ -31,7 +31,7 @@ writematrix(globalMetrics, writePath, 'WriteMode', 'append');
 fclose(fid);
 
 %% print random graph metrics
-writePath = strcat(outputPath, filesep, fileName, '-GlobalMetricsRandom-', graphTypeTag, '.csv');
+writePath = fullfile(outputPath, strcat(fileName, '-GlobalMetricsRandom-', graphTypeTag, '.csv'));
 fid = fopen(writePath, 'w');
 
 for i = 1:nGlobalMetrics
@@ -43,7 +43,7 @@ writematrix(globalMetricsRandom, writePath, 'WriteMode', 'append');
 fclose(fid);
 
 %% print local metrics
-writePath = strcat(outputPath, filesep, fileName, '-LocalMetrics-', graphTypeTag, '.csv');
+writePath = fullfile(outputPath, strcat(fileName, '-LocalMetrics-', graphTypeTag, '.csv'));
 fid = fopen(writePath, 'w');
 
 for i = 1:nLocalMetrics
@@ -55,10 +55,10 @@ writematrix(localMetrics, writePath, 'WriteMode', 'append');
 fclose(fid);
 
 %% print adjacency matrix
-writePath = strcat(outputPath, filesep, fileName, '-AdjacencyMatrix-', graphTypeTag, '.csv');
+writePath = fullfile(outputPath, strcat(fileName, '-AdjacencyMatrix-', graphTypeTag, '.csv'));
 csvwrite(writePath, adjacencyMatrixBinary);
 
 %% save cellInfoAllCells to file
-writePath = strcat(outputPath, filesep, fileName, '-cellInfoAllCells-', graphTypeTag, '.mat');
+writePath = fullfile(outputPath, strcat(fileName, '-cellInfoAllCells-', graphTypeTag, '.mat'));
 save(writePath, 'cellInfoAllCells');
 end

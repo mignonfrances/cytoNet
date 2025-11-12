@@ -40,5 +40,5 @@ crossCorrelation = A - diag(diag(A)); % set diagonal elements to zero
 crossCorrelation = squareform(crossCorrelation);
 
 % set cutoff
-cutoff = prctile(crossCorrelation, cutoffPercentile);
+cutoff = percentile(crossCorrelation, cutoffPercentile);
 end

@@ -16,7 +16,8 @@ nSpikesThreshold = 2; % minimum number of spikes to determine an active cell
 cutoffPercentile = 99; % percentile of scrambled correlations to be used for cutoff
 maxLag = 0; %  maximum value of lag allowed for calculating correlations
 
-fileName = getFileName(filePath);
+% fileName = getFileName(filePath);
+[~, fileName, ~] = fileparts(filePath);
 infoImage = imfinfo(filePath);
 
 maxImage = findMaxImage(filePath); % extract maximum intensity projection image
@@ -83,25 +84,25 @@ cellInfoAllCells.Fprocessed = zeros(totalFrames, nCells);
 cellInfoAllCells.F0 = zeros(totalFrames, nCells);
 Fraw = cellInfoAllCells.Fraw;
 
-for j = 1:nCells % loop over all cells
-    currentF = Fraw(:, j);
-    
-    % subtract linear trend from mean intensity data
-    currentF = detrend(currentF) + currentF(1);
-    
-    % create moving baseline vector
-    window = round(totalFrames/100); % moving window is a hundredth of total time
-    currentF = smooth(currentF, window); % smooth time-varying intensity trace
-    F0 = zeros(size(currentF));
-    parfor k = 1:totalFrames
-        if k <= window
-            F0(k) = prctile(currentF(1:k+window), 8);
-        elseif k >= length(currentF) - window
-            F0(k) = prctile(currentF(k-window:length(currentF)), 8);
-        else
-            F0(k) = prctile(currentF(k-window:k+window), 8);
+    for j = 1:nCells % loop over all cells
+        currentF = Fraw(:, j);
+
+        % subtract linear trend from mean intensity data
+        currentF = detrend(currentF) + currentF(1);
+
+        % create moving baseline vector
+        window = round(totalFrames/100); % moving window is a hundredth of total time
+        currentF = smooth(currentF, window); % smooth time-varying intensity trace
+        F0 = zeros(size(currentF));
+        parfor k = 1:totalFrames
+            if k <= window
+                F0(k) = percentile(currentF(1:k+window), 8);
+            elseif k >= length(currentF) - window
+                F0(k) = percentile(currentF(k-window:length(currentF)), 8);
+            else
+                F0(k) = percentile(currentF(k-window:k+window), 8);
+            end
         end
-    end
     
     cellInfoAllCells.F0(:, j) = F0; % store baseline intensity
     cellInfoAllCells.Fprocessed(:, j) = smooth((currentF - F0)./F0); % calculate delta F / F, smooth data, and store as Fprocessed

@@ -14,7 +14,8 @@
 
 function errorReport = calciumEngine(errorReport, filePath, outputDirName, maskPath)
 
-fileName = getFileName(filePath);
+[~, fileName, ~] = fileparts(filePath);
+
 
 % generate functional graph based on cross-correlation analysis
 if nargin < 4
